@@ -11,12 +11,21 @@ import {
     getGameById,
 } from './games';
 
+/** Ids of the rows created by {@link seedFilterFixture}, keyed by name. */
 interface FilterFixture {
+    /** Category ids keyed by category name (`Strategy`, `Puzzle`, `Arcade`). */
     categoryIds: Record<string, number>;
+    /** Publisher ids keyed by publisher name (`Pub One`, `Pub Two`). */
     publisherIds: Record<string, number>;
 }
 
-/** Seeds games across two categories and two publishers. */
+/**
+ * Seeds four games across two categories and two publishers, plus an unused
+ * `Arcade` category for no-match cases.
+ *
+ * @param db - Database to seed.
+ * @returns The ids of the seeded categories and publishers.
+ */
 async function seedFilterFixture(db: Database): Promise<FilterFixture> {
     const categoryIds: Record<string, number> = {};
     for (const name of ['Strategy', 'Puzzle', 'Arcade']) {
@@ -47,6 +56,14 @@ async function seedFilterFixture(db: Database): Promise<FilterFixture> {
     return { categoryIds, publisherIds };
 }
 
+/**
+ * Seeds `count` games sharing one category and one publisher, titled
+ * `Game 01`, `Game 02`, … and inserted in reverse-alphabetical order.
+ *
+ * @param db - Database to seed.
+ * @param count - Number of games to insert.
+ * @returns A promise that resolves once all rows are inserted.
+ */
 async function seedGames(db: Database, count: number): Promise<void> {
     const [category] = await db
         .insert(categories)
@@ -108,6 +125,7 @@ describe('getFilteredGames', () => {
     let db: Database;
     let fixture: FilterFixture;
 
+    /** Maps games to their titles for concise ordering assertions. */
     const titles = (list: Array<{ title: string }>): string[] => list.map((g) => g.title);
 
     beforeEach(async () => {

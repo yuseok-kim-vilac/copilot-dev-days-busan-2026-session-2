@@ -1,8 +1,20 @@
 ---
 import type { Category, Publisher } from '../types/game';
 
+/**
+ * Props for the game listing filter form.
+ *
+ * @remarks
+ * Renders a category checkbox group (selected categories are OR-ed) and a
+ * single publisher select (AND-ed with the categories). Filtering happens
+ * client-side by showing/hiding `[data-testid="game-card"]` elements via their
+ * `data-category-id`/`data-publisher-id` attributes, and the selection is kept
+ * in sync with the `?category=&publisher=` URL query.
+ */
 interface Props {
+    /** Categories rendered as checkboxes. */
     categories: Category[];
+    /** Publishers rendered as options of the publisher select. */
     publishers: Publisher[];
     /** Number of games shown before any filter is applied. */
     total: number;
@@ -10,6 +22,7 @@ interface Props {
 
 const { categories, publishers, total } = Astro.props;
 
+/** Shared visible focus-state utility classes for the filter controls. */
 const focusRing = 'focus:ring-2 focus:ring-blue-500 focus:outline-none';
 ---
 
@@ -78,7 +91,14 @@ const focusRing = 'focus:ring-2 focus:ring-blue-500 focus:outline-none';
         form?.querySelectorAll<HTMLInputElement>('input[name="category"]') ?? [],
     );
 
-    /** Show only cards in any selected category (OR) that also match the publisher (AND). */
+    /**
+     * Applies the current filter selection to the game cards.
+     *
+     * @remarks
+     * Shows only cards in any selected category (OR) that also match the
+     * selected publisher (AND), updates the result count and empty state, and
+     * syncs the selection to the `?category=&publisher=` URL query.
+     */
     function applyFilters(): void {
         if (!form || !count) return;
 
@@ -107,7 +127,13 @@ const focusRing = 'focus:ring-2 focus:ring-blue-500 focus:outline-none';
         history.replaceState(null, '', query ? `?${query}` : location.pathname);
     }
 
-    /** Restore the selection from the URL so filtered views can be shared. */
+    /**
+     * Restores the filter selection from the URL query.
+     *
+     * @remarks
+     * Reads `category` (repeatable) and `publisher` params so filtered views
+     * can be shared; unknown publisher ids fall back to "All publishers".
+     */
     function restoreFromUrl(): void {
         const params = new URLSearchParams(location.search);
         const categories = params.getAll('category');

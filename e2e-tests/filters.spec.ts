@@ -1,17 +1,27 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import { getDatabase } from '../src/lib/db';
 import { getAllCategories, getAllPublishers, getFilteredGames } from '../src/lib/games';
 import type { GameFilters } from '../src/lib/games';
 
 const db = getDatabase();
 
-/** Titles the listing should show for the given filters, per the data layer. */
+/**
+ * Titles the listing should show for the given filters, per the data layer.
+ *
+ * @param filters - Category/publisher filters to apply.
+ * @returns Matching game titles, ordered by title.
+ */
 async function expectedTitles(filters: GameFilters): Promise<string[]> {
   return (await getFilteredGames(db, filters)).map((game) => game.title);
 }
 
-/** Locator for cards that are currently shown (filtered-out cards get `hidden`). */
-function visibleTitles(page: Page) {
+/**
+ * Locator for the titles of cards that are currently shown (filtered-out cards get `hidden`).
+ *
+ * @param page - Page showing the game listing.
+ * @returns Locator matching the visible game card titles.
+ */
+function visibleTitles(page: Page): Locator {
   return page.locator('[data-testid="game-card"]:not([hidden]) [data-testid="game-title"]');
 }
 
