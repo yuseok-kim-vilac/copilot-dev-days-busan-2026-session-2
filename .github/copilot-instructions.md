@@ -52,6 +52,7 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Provide a branded `404.astro` (unknown routes are real 404s under static output)
 - Only add a scoped Astro `<script>` when genuine client interactivity is required
 - Listing cards use `formatRatingScore` from `src/lib/ratings.ts` to display ratings out of five, or `No rating yet` for `null`; keep the rating in the existing details row.
+- The listing filters (`src/components/GameFilters.astro`) filter client-side by showing/hiding cards via their `data-category-id`/`data-publisher-id` attributes: categories are OR-ed, category and publisher are AND-ed, and the selection syncs to `?category=&publisher=`. The `getFilteredGames`/`getAllCategories`/`getAllPublishers` helpers in `src/lib/games.ts` define the same semantics server-side; keep them consistent.
 
 ### Styling
 
