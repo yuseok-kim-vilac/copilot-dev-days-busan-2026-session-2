@@ -1,4 +1,6 @@
 import { test, expect, type Response } from '@playwright/test';
+import { getDatabase } from '../src/lib/db';
+import { getAllGames } from '../src/lib/games';
 
 test.describe('Game Listing and Navigation', () => {
   test('should display games with titles on index page', async ({ page }) => {
@@ -21,6 +23,31 @@ test.describe('Game Listing and Navigation', () => {
       const gameCards = page.getByTestId('game-card');
       await expect(gameCards.first().getByTestId('game-title')).toBeVisible();
       await expect(gameCards.first().getByTestId('game-title')).not.toBeEmpty();
+    });
+  });
+
+  test('should display each game rating out of five or an unrated message', async ({ page }) => {
+    const games = await getAllGames(getDatabase());
+    expect(games.length).toBeGreaterThan(0);
+
+    await test.step('Navigate to the listing and verify all cards are present', async () => {
+      await page.goto('/');
+      await expect(page.getByTestId('game-card')).toHaveCount(games.length);
+    });
+
+    await test.step('Verify each card shows its own rating', async () => {
+      for (const game of games) {
+        const card = page.getByTestId('game-card').filter({
+          has: page.getByRole('heading', { name: game.title, exact: true }),
+        });
+        const expected = game.starRating === null
+          ? 'No rating yet'
+          : `${game.starRating.toFixed(1)} / 5`;
+
+        await expect(card.getByTestId('game-rating')).toHaveText(expected);
+        await expect(card.getByText('View details', { exact: true })).toBeVisible();
+        await expect(card).toHaveAttribute('href', `/game/${game.id}`);
+      }
     });
   });
 

@@ -51,6 +51,7 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Dynamic routes use `getStaticPaths()` + `export const prerender = true`
 - Provide a branded `404.astro` (unknown routes are real 404s under static output)
 - Only add a scoped Astro `<script>` when genuine client interactivity is required
+- Listing cards use `formatRatingScore` from `src/lib/ratings.ts` to display ratings out of five, or `No rating yet` for `null`; keep the rating in the existing details row.
 
 ### Styling
 
