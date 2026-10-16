@@ -4,7 +4,15 @@ import { formatRatingScore } from '../lib/ratings';
 import Tag from './Tag.astro';
 import ArrowRight from '../assets/icons/arrow-right.svg';
 
+/**
+ * Props for a game listing card.
+ *
+ * @remarks
+ * The card links to `/game/{id}`, exposes `data-category-id`/`data-publisher-id`
+ * for client-side filtering, and shows the rating via `formatRatingScore`.
+ */
 interface Props {
+    /** Game to render, including its optional category and publisher. */
     game: Game;
 }
 

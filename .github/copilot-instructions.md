@@ -36,6 +36,8 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 
 - Use TypeScript with explicit types for function parameters and return values, especially in the data layer (`db/`, `src/lib/`)
 - Frontend code (TypeScript, Astro) must pass ESLint checks (`npm run lint`)
+- 새 TypeScript 코드에는 문서화를 위한 TSDoc 주석을 작성합니다.
+- 기존 코드에도 필요한 경우 TSDoc 주석을 추가하여 일관성을 유지합니다.
 
 ### Data Layer Patterns (Drizzle + Node SQLite)
 
